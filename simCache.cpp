@@ -1,3 +1,6 @@
+#ifndef __SIMCACHE_H__
+#define __SIMCACHE_H__
+
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -23,10 +26,6 @@ struct MemAddr
 
 cacheResType simCache(MemAddr addr, vector<vector<CacheLine>> &cache, vector<int> &replaceCount);
 
-int main()
-{
-}
-
 //{{s0,s1,s2,...},{s0,s1,s3,...}} 2-way set associative would look like this
 cacheResType simCache(MemAddr addr, vector<vector<CacheLine>> &cache, vector<int> &replaceCount)
 {
@@ -49,3 +48,4 @@ cacheResType simCache(MemAddr addr, vector<vector<CacheLine>> &cache, vector<int
     replaceCount[addr.Index] = ++replaceCount[addr.Index] % numWays;
     return MISS;
 }
+#endif // __SIMCACHE_H__
