@@ -53,6 +53,18 @@ unsigned int memGen6()
     return (addr += 32) % (64 * 4 * 1024);
 }
 
+unsigned int testINT()
+{
+    static unsigned int addr = 0;
+    return (addr += 4);
+}
+
+unsigned int testCHAR()
+{
+    static unsigned int addr = 0;
+    return (addr += 1);
+}
+
 void runSim1(int numWays, int lineSize, double iterations)
 {
     double hit = 0;
@@ -167,13 +179,71 @@ void runSim6(int numWays, int lineSize, double iterations)
     cout << "\t Hit ratio = " << (hit / iterations) << endl;
 }
 
+void testCaseINT(int numWays, int lineSize, double iterations)
+{
+    double hit = 0;
+    int numSets;
+    vector<vector<CacheLine>> cache = initializeCache(numWays, lineSize, numSets);
+    vector<int> replaceIndex(numSets, 0);
+    cacheResType r;
+    MemAddr addr;
+    for (int i = 0; i < iterations; i++)
+    {
+        int x = testINT();
+        getAddress(addr, numWays, lineSize, x);
+        r = simCache(addr, cache, replaceIndex);
+        if (r == HIT)
+            hit++;
+    }
+    cout << "\t Hit ratio = " << (hit / iterations) << endl;
+}
+
+void testCaseCHAR(int numWays, int lineSize, double iterations)
+{
+    double hit = 0;
+    int numSets;
+    vector<vector<CacheLine>> cache = initializeCache(numWays, lineSize, numSets);
+    vector<int> replaceIndex(numSets, 0);
+    cacheResType r;
+    MemAddr addr;
+    for (int i = 0; i < iterations; i++)
+    {
+        int x = testCHAR();
+        getAddress(addr, numWays, lineSize, x);
+        r = simCache(addr, cache, replaceIndex);
+        if (r == HIT)
+            hit++;
+    }
+    cout << "\t Hit ratio = " << (hit / iterations) << endl;
+}
+
 int main()
 {
     int numWays[5] = {1, 2, 4, 8, 16};
     int lineSize[4] = {16, 32, 64, 128};
     double iterations = 1000000;
 
-    cout << "Experiment 1: " << endl;
+    // ASSUME # of ways = 4, line size = 32, iterations = 100
+    // Every line has 32/4 = 8 integers
+    // Every set is 8 * 4 = 32 integers
+    // 100/32 = 3.125 -> fills 3 sets and 1 line
+    // 3*4 + 1 misses = 13 misses
+    //  hit ratio = (100-13)/100 = 0.87
+    cout << "Test Case INT: " << endl;
+    cout << "100: \t";
+    testCaseINT(numWays[2], lineSize[1], 100.0);
+
+    // ASSUME # of ways = 4, line size = 32, iterations = 1000
+    // Every line has 32/1 = 32 characters
+    // Every set is 32 * 4 = 128 characters
+    // 1000/128 = 7.8125 -> fills 7 sets and 4 lines
+    // 7*4 + 4 misses = 32 misses
+    //  hit ratio = (100-32)/100 = 0.968
+    cout << "\nTest Case CHAR: " << endl;
+    cout << "1000: \t";
+    testCaseCHAR(numWays[2], lineSize[1], 1000.0);
+
+    cout << "\nExperiment 1: " << endl;
     for (int i = 0; i < 4; i++)
     {
         cout << "Line Size: " << lineSize[i] << endl;
