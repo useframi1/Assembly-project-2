@@ -1,4 +1,9 @@
 # CSCE 2303 Project 2
+## Implementation
+- In order to store the seperate aspects of the cache line we created a struct `struct CacheLine` that will store the valid bit and the tag
+- In order to store the seperate aspects of the given memory adress a struct `struct MemAddr` is used to store the offset, the index and the tag that are obtained through calculations explained below
+- To represent the cache we used a 2D vector `vector<vector<CacheLine>> cache` where every inner vector is essentially its own direct-map cache so that every line in the same set is in the same index in every vector.
+- In order to implement the FIFO replacment policy, we created a vector of integers `vector<int> replaceIndex` to store the index of the inner vector that holds the cacheLine that is up for replacemnt. After every replacment this integer is incremented and moduled by numWays. The size of this vector is equal to the number of sets in the cache. 
 ## Files
 ### [InitializeCache](Functions/initializeCache.h)
 This function will accest the number of ways and line size as parameters and will use this data to calculate the number of sets and will initalize all the lines in the cache to have a valid bit of 0 to show that the line does not have any meaningful data yet
