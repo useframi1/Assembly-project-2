@@ -6,13 +6,13 @@
 - In order to implement the FIFO replacment policy, we created a vector of integers `vector<int> replaceIndex` to store the index of the inner vector that holds the cacheLine that is up for replacemnt. After every replacment this integer is incremented and moduled by numWays. The size of this vector is equal to the number of sets in the cache. 
 ## Files
 ### [InitializeCache](Functions/initializeCache.h)
-This function will accest the number of ways and line size as parameters and will use this data to calculate the number of sets and will initalize all the lines in the cache to have a valid bit of 0 to show that the line does not have any meaningful data yet
+This function will access the number of ways and line size as parameters and will use this data to calculate the number of sets and will initalize all the lines in the cache to have a valid bit of 0 to show that the line does not have any meaningful data yet
 
 ### [getAddress](Functions/getAddress.h)
-This function accepts the memory sddress and uses the line size and number of ways to perform a few calculations on the adress in order to extract from it the offset, the index and the tag. These calculations include:
+This function accepts the memory address and uses the line size and number of ways to perform a few calculations on the adress in order to extract from it the offset, the index and the tag. These calculations include:
 ```
-offset bits = log<sub>2</sub>(lineSize)
-index bits = log<sub>2</sub>(cache size / (lineSize * numWays)
+offset bits = log_2(lineSize)
+index bits = log_2(cache size / (lineSize * numWays)
 Tag bits = Address bits - offset bits - index bits
 ```
 ### [simCache](Functions/simCache.h)
